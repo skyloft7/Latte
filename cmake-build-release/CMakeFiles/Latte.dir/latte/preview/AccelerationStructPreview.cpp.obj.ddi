@@ -1,0 +1,13 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "CMakeFiles\\Latte.dir\\latte\\preview\\AccelerationStructPreview.cpp.obj",
+            "outputs": [
+                "CMakeFiles\\Latte.dir\\latte\\preview\\AccelerationStructPreview.cpp.obj.ddi"
+            ],
+            "requires": []
+        }
+    ]
+}

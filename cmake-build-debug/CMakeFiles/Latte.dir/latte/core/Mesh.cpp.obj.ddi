@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "CMakeFiles\\Latte.dir\\latte\\core\\Mesh.cpp.obj",
+            "outputs": [
+                "C:\\Users\\Shayan\\CLionProjects\\Latte\\cmake-build-debug\\vc140.pdb",
+                "CMakeFiles\\Latte.dir\\latte\\core\\Mesh.cpp.obj.ddi"
+            ],
+            "requires": []
+        }
+    ]
+}

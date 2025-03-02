@@ -1,0 +1,3 @@
+C:/Users/Shayan/CLionProjects/Latte/cmake-build-debug/CMakeFiles/Latte.dir
+C:/Users/Shayan/CLionProjects/Latte/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Shayan/CLionProjects/Latte/cmake-build-debug/CMakeFiles/rebuild_cache.dir
