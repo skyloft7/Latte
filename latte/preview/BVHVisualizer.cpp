@@ -102,20 +102,6 @@ std::shared_ptr<Mesh> BVHVisualizer::generate(Mesh& mesh) {
         box(*wireframeMesh, node.min, node.max);
     }
 
-    std::vector<int> vec = {0, 1, 2, 3, 4, 5};
-
-    int start = 0 * 3;
-    int end = 1 * 3;
-
-    std::swap_ranges(vec.begin() + start,
-                             vec.begin() + end,
-                             vec.begin() + 3
-                             );
-
-
-    for (int c : vec)
-        std::cout << c << std::endl;
-
 
     return wireframeMesh;
 }
