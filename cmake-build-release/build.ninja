@@ -129,7 +129,25 @@ build CMakeFiles\Latte.dir\latte\Core.cpp.obj: CXX_COMPILER__Latte_scanned_Relea
   TARGET_PDB = Latte.pdb
   dyndep = CMakeFiles/Latte.dir/CXX.dd
 
-build CMakeFiles\Latte.dir\CXX.dd | C$:\Users\Shayan\CLionProjects\Latte\cmake-build-release\CMakeFiles\Latte.dir\CXXModules.json CMakeFiles\Latte.dir\latte\main.cpp.obj.modmap CMakeFiles\Latte.dir\latte\core\Mesh.cpp.obj.modmap CMakeFiles\Latte.dir\latte\preview\AccelerationStructPreview.cpp.obj.modmap CMakeFiles\Latte.dir\latte\Core.cpp.obj.modmap: CXX_DYNDEP__Latte_Release CMakeFiles\Latte.dir\latte\main.cpp.obj.ddi CMakeFiles\Latte.dir\latte\core\Mesh.cpp.obj.ddi CMakeFiles\Latte.dir\latte\preview\AccelerationStructPreview.cpp.obj.ddi CMakeFiles\Latte.dir\latte\Core.cpp.obj.ddi | C$:\Users\Shayan\CLionProjects\Latte\cmake-build-release\CMakeFiles\Latte.dir\CXXDependInfo.json
+build CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj.ddi: CXX_SCAN__Latte_Release C$:\Users\Shayan\CLionProjects\Latte\latte\preview\BVHVisualizer.cpp || cmake_object_order_depends_target_Latte
+  DEP_FILE = CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj.ddi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
+  INCLUDES = -IC:\Users\Shayan\CLionProjects\Latte\libs\glm-1.0.1-light\glm -IC:\Users\Shayan\CLionProjects\Latte\libs\glfw-3.4.bin.WIN64\include -IC:\Users\Shayan\CLionProjects\Latte\libs\glad\include
+  OBJ_FILE = CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj.ddi.i
+
+build CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj: CXX_COMPILER__Latte_scanned_Release C$:\Users\Shayan\CLionProjects\Latte\latte\preview\BVHVisualizer.cpp | CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj.modmap || cmake_object_order_depends_target_Latte CMakeFiles\Latte.dir\CXX.dd
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj.modmap
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
+  INCLUDES = -IC:\Users\Shayan\CLionProjects\Latte\libs\glm-1.0.1-light\glm -IC:\Users\Shayan\CLionProjects\Latte\libs\glfw-3.4.bin.WIN64\include -IC:\Users\Shayan\CLionProjects\Latte\libs\glad\include
+  OBJECT_DIR = CMakeFiles\Latte.dir
+  OBJECT_FILE_DIR = CMakeFiles\Latte.dir\latte\preview
+  TARGET_COMPILE_PDB = CMakeFiles\Latte.dir\
+  TARGET_PDB = Latte.pdb
+  dyndep = CMakeFiles/Latte.dir/CXX.dd
+
+build CMakeFiles\Latte.dir\CXX.dd | C$:\Users\Shayan\CLionProjects\Latte\cmake-build-release\CMakeFiles\Latte.dir\CXXModules.json CMakeFiles\Latte.dir\latte\main.cpp.obj.modmap CMakeFiles\Latte.dir\latte\core\Mesh.cpp.obj.modmap CMakeFiles\Latte.dir\latte\preview\AccelerationStructPreview.cpp.obj.modmap CMakeFiles\Latte.dir\latte\Core.cpp.obj.modmap CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj.modmap: CXX_DYNDEP__Latte_Release CMakeFiles\Latte.dir\latte\main.cpp.obj.ddi CMakeFiles\Latte.dir\latte\core\Mesh.cpp.obj.ddi CMakeFiles\Latte.dir\latte\preview\AccelerationStructPreview.cpp.obj.ddi CMakeFiles\Latte.dir\latte\Core.cpp.obj.ddi CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj.ddi | C$:\Users\Shayan\CLionProjects\Latte\cmake-build-release\CMakeFiles\Latte.dir\CXXDependInfo.json
 
 
 # =============================================================================
@@ -139,7 +157,7 @@ build CMakeFiles\Latte.dir\CXX.dd | C$:\Users\Shayan\CLionProjects\Latte\cmake-b
 #############################################
 # Link the executable Latte.exe
 
-build Latte.exe: CXX_EXECUTABLE_LINKER__Latte_Release CMakeFiles\Latte.dir\latte\main.cpp.obj CMakeFiles\Latte.dir\latte\core\Mesh.cpp.obj CMakeFiles\Latte.dir\latte\preview\AccelerationStructPreview.cpp.obj CMakeFiles\Latte.dir\latte\external\glad.c.obj CMakeFiles\Latte.dir\latte\Core.cpp.obj | C$:\Users\Shayan\CLionProjects\Latte\libs\glfw-3.4.bin.WIN64\lib-vc2022\glfw3.lib
+build Latte.exe: CXX_EXECUTABLE_LINKER__Latte_Release CMakeFiles\Latte.dir\latte\main.cpp.obj CMakeFiles\Latte.dir\latte\core\Mesh.cpp.obj CMakeFiles\Latte.dir\latte\preview\AccelerationStructPreview.cpp.obj CMakeFiles\Latte.dir\latte\external\glad.c.obj CMakeFiles\Latte.dir\latte\Core.cpp.obj CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj | C$:\Users\Shayan\CLionProjects\Latte\libs\glfw-3.4.bin.WIN64\lib-vc2022\glfw3.lib
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -MD
   LINK_FLAGS = /machine:x64 /INCREMENTAL:NO /subsystem:console
   LINK_LIBRARIES = C:\Users\Shayan\CLionProjects\Latte\libs\glfw-3.4.bin.WIN64\lib-vc2022\glfw3.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

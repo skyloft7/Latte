@@ -51,7 +51,7 @@ std::shared_ptr<Mesh> Core::loadMesh(std::string filePath) {
         exit(1);
     }
 
-    std::shared_ptr<std::vector<glm::vec4>> vertices = std::make_shared<std::vector<glm::vec4>>();
+    std::shared_ptr<std::vector<Vertex>> vertices = std::make_shared<std::vector<Vertex>>();
     std::shared_ptr<std::vector<int>> indices = std::make_shared<std::vector<int>>();
 
     //Model Loading
@@ -92,12 +92,12 @@ std::shared_ptr<Mesh> Core::loadMesh(std::string filePath) {
                     tinyobj::real_t vy = attrib.vertices[3 * size_t(idx.vertex_index) + 1];
                     tinyobj::real_t vz = attrib.vertices[3 * size_t(idx.vertex_index) + 2];
 
+                    vertices->emplace_back(
+                        glm::vec4(glm::vec3(vx, vy, vz), 1.0),
+                        glm::vec3(1.0)
+                    );
 
-                    vertices->push_back(glm::vec4(glm::vec3(vx, vy, vz), 1.0));
                     indices->push_back(indexOffset + vertexIndex);
-
-
-
                 }
                 indexOffset += numFaceVertices;
             }

@@ -7,3 +7,5 @@ build CMakeFiles\Latte.dir\latte\preview\AccelerationStructPreview.cpp.obj: dynd
 
 build CMakeFiles\Latte.dir\latte\Core.cpp.obj: dyndep
 
+build CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj: dyndep
+

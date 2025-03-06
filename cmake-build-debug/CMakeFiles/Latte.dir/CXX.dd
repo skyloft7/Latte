@@ -5,3 +5,7 @@ build CMakeFiles\Latte.dir\latte\core\Mesh.cpp.obj: dyndep
 
 build CMakeFiles\Latte.dir\latte\preview\AccelerationStructPreview.cpp.obj: dyndep
 
+build CMakeFiles\Latte.dir\latte\Core.cpp.obj: dyndep
+
+build CMakeFiles\Latte.dir\latte\preview\BVHVisualizer.cpp.obj: dyndep
+
