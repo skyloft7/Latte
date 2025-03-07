@@ -254,12 +254,12 @@ void AccelerationStructPreview::run(std::string title, int width, int height, st
 
     bool startedDrag = false;
     float currentRotX = 0, currentRotY = 0;
-    float damping = 0.15;
+    float damping = 0.1;
 
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.4f, 0.4f, 0.4f, 0.0f);
 
 
         //Render the model
