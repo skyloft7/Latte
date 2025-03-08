@@ -298,78 +298,78 @@ void AccelerationStructPreview::run(std::string title, int width, int height, st
 
 
 
+            if (!io.WantCaptureMouse) {
+                bool dragging = false;
 
+                if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
+                    double mouseX = 0.0;
+                    double mouseY = 0.0;
+                    glfwGetCursorPos(window, &mouseX, &mouseY);
 
-            bool dragging = false;
+                    dragging = (mouseX != mousePos.x || mouseY != mousePos.y);
+                    mousePos = glm::vec2((float) mouseX, (float) mouseY);
 
-            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-                double mouseX = 0.0;
-                double mouseY = 0.0;
-                glfwGetCursorPos(window, &mouseX, &mouseY);
-
-                dragging = (mouseX != mousePos.x || mouseY != mousePos.y);
-                mousePos = glm::vec2((float) mouseX, (float) mouseY);
-
-                if (!startedDrag) {
-                    startedDrag = true;
-                    dragStartPos = mousePos;
-                }
-
-            }
-            else startedDrag = false;
-
-
-            if (dragging) {
-
-                double newCursorX = 0.0;
-                double newCursorY = 0.0;
-                glfwGetCursorPos(window, &newCursorX, &newCursorY);
-                glm::vec2 newMousePos = glm::vec2(newCursorX, newCursorY);
-
-                if (newMousePos.x != dragStartPos.x && newMousePos.y != dragStartPos.y) {
-
-                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
-                    double newestCursorX = 0.0;
-                    double newestCursorY = 0.0;
-                    glfwGetCursorPos(window, &newestCursorX, &newestCursorY);
-                    glm::vec2 newestMousePos = glm::vec2(newestCursorX, newestCursorY);
-
-                    float xsign = glm::sign(newestMousePos.x - newMousePos.x);
-                    float ysign = glm::sign(newestMousePos.y - newMousePos.y);
-
-                    float radX, radY;
-
-
-                    float adjacent = glm::length(whereToLookAt.z - cameraPos.z);
-
-
-                    {
-                        float opposite = glm::length(newMousePos.x - dragStartPos.x);
-                        radX = glm::atan(opposite / adjacent) * xsign;
+                    if (!startedDrag) {
+                        startedDrag = true;
+                        dragStartPos = mousePos;
                     }
 
-                    {
-                        float opposite = glm::length(newMousePos.y - dragStartPos.y);
-                        radY = glm::atan(opposite / adjacent) * ysign;
+                }
+                else startedDrag = false;
+
+
+                if (dragging) {
+
+                    double newCursorX = 0.0;
+                    double newCursorY = 0.0;
+                    glfwGetCursorPos(window, &newCursorX, &newCursorY);
+                    glm::vec2 newMousePos = glm::vec2(newCursorX, newCursorY);
+
+                    if (newMousePos.x != dragStartPos.x && newMousePos.y != dragStartPos.y) {
+
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+                        double newestCursorX = 0.0;
+                        double newestCursorY = 0.0;
+                        glfwGetCursorPos(window, &newestCursorX, &newestCursorY);
+                        glm::vec2 newestMousePos = glm::vec2(newestCursorX, newestCursorY);
+
+                        float xsign = glm::sign(newestMousePos.x - newMousePos.x);
+                        float ysign = glm::sign(newestMousePos.y - newMousePos.y);
+
+                        float radX, radY;
+
+
+                        float adjacent = glm::length(whereToLookAt.z - cameraPos.z);
+
+
+                        {
+                            float opposite = glm::length(newMousePos.x - dragStartPos.x);
+                            radX = glm::atan(opposite / adjacent) * xsign;
+                        }
+
+                        {
+                            float opposite = glm::length(newMousePos.y - dragStartPos.y);
+                            radY = glm::atan(opposite / adjacent) * ysign;
+                        }
+
+
+                        transform = glm::rotate(transform, radX * damping, up);
+                        transform = glm::rotate(transform, radY * damping, right);
+
+                        currentRotX += radX * damping;
+                        currentRotY += radY * damping;
+
+
+
+
+
                     }
-
-
-                    transform = glm::rotate(transform, radX * damping, up);
-                    transform = glm::rotate(transform, radY * damping, right);
-
-                    currentRotX += radX * damping;
-                    currentRotY += radY * damping;
-
 
 
 
 
                 }
-
-
-
-
             }
 
             glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
