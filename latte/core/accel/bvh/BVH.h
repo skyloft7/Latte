@@ -7,8 +7,9 @@ struct BVHNode {
     int firstTriangleIndex = 0;
     int triangleCount = 0;
     int depth = 0;
-    int leftNodeIndex;
-    int rightNodeIndex;
+    int leftNodeIndex = 0;
+    int rightNodeIndex = 0;
+    bool isLeaf = true;
 };
 
 struct SplitAxisInfo {

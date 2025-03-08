@@ -1,7 +1,7 @@
 #include "BVH.h"
 
 #include <algorithm>
-
+#include <ext/matrix_transform.hpp>
 
 
 void BVH::include(BVHNode& node, glm::vec4 t0, glm::vec4 t1, glm::vec4 t2) {
@@ -81,7 +81,10 @@ void BVH::subdivide(Mesh& mesh, std::vector<BVHNode>& nodes, BVHNode& parent, in
 
     SplitAxisInfo splitAxisInfo = splitWithSAH(mesh, parent, numTestsPerAxis);
     float parentCost = cost(parent, parent.triangleCount);
-    if (splitAxisInfo.cost >= parentCost || parent.depth >= maxDepth) return;
+
+    if (parent.depth >= maxDepth || splitAxisInfo.cost >= parentCost) {
+        return;
+    }
 
     BVHNode leftNode, rightNode;
     leftNode.firstTriangleIndex = parent.firstTriangleIndex;
@@ -124,7 +127,7 @@ void BVH::subdivide(Mesh& mesh, std::vector<BVHNode>& nodes, BVHNode& parent, in
     parent.leftNodeIndex = nodes.size() - 1;
     nodes.push_back(rightNode);
     parent.rightNodeIndex = nodes.size() - 1;
-
+    parent.isLeaf = false;
 
     subdivide(mesh, nodes, leftNode, maxDepth, numTestsPerAxis);
     subdivide(mesh, nodes, rightNode, maxDepth, numTestsPerAxis);
@@ -138,7 +141,6 @@ std::shared_ptr<std::vector<BVHNode>> BVH::generate(Mesh& mesh, int maxDepth, in
     root.firstTriangleIndex = 0;
     root.triangleCount = totalIndexCount / 3;
 
-    //Build the root node
     for (int index = 0; index < root.triangleCount; index++) {
         glm::vec4 t0 = mesh.getVertices()->at(mesh.getIndices()->at(index * 3)).position;
         glm::vec4 t1 = mesh.getVertices()->at(mesh.getIndices()->at(index * 3 + 1)).position;
