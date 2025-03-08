@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 #define TINYOBJLOADER_IMPLEMENTATION
-#include "external/tiny_obj_loader.h"
+#include "external/tiny_obj_loader/tiny_obj_loader.h"
 #include <iostream>
 
 std::string Core::readFile(std::string filePath) {
