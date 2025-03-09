@@ -9,7 +9,7 @@ class Raylet {
 
 public:
     Raylet(glm::vec4 origin, glm::vec4 direction) : mOrigin(origin), mDirection(direction) {
-        mInverseDir = 1.0f / mDirection;
+        mInverseDir = glm::vec4(1.0) / mDirection;
     }
     glm::vec4 getOrigin() {return mOrigin;}
     glm::vec4 getDirection() {return mDirection;}

@@ -25,9 +25,9 @@ float BVH::evaluateSplit(Mesh& mesh, BVHNode node, int axis, float pos) {
     BVHNode right;
 
     for (int triangleIndex = node.firstTriangleIndex; triangleIndex < node.firstTriangleIndex + node.triangleCount; triangleIndex++) {
-        glm::vec4 t0 = mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3)).position;
-        glm::vec4 t1 = mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3 + 1)).position;
-        glm::vec4 t2 = mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3 + 2)).position;
+        glm::vec4 t0 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3)).position;
+        glm::vec4 t1 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3 + 1)).position;
+        glm::vec4 t2 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3 + 2)).position;
 
         glm::vec4 centroid = (t0 + t1 + t2) / 3.0f;
 
@@ -94,9 +94,9 @@ void BVH::subdivide(Mesh& mesh, std::vector<BVHNode>& nodes, BVHNode& parent, in
 
     for (int triangleIndex = parent.firstTriangleIndex; triangleIndex < parent.firstTriangleIndex + parent.triangleCount; triangleIndex++) {
 
-        glm::vec4 t0 = mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3)).position;
-        glm::vec4 t1 = mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3 + 1)).position;
-        glm::vec4 t2 = mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3 + 2)).position;
+        glm::vec4 t0 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3)).position;
+        glm::vec4 t1 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3 + 1)).position;
+        glm::vec4 t2 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(triangleIndex * 3 + 2)).position;
         glm::vec4 centroid = (t0 + t1 + t2) / 3.0f;
 
 
@@ -142,9 +142,9 @@ std::shared_ptr<std::vector<BVHNode>> BVH::generate(Mesh& mesh, int maxDepth, in
     root.triangleCount = totalIndexCount / 3;
 
     for (int index = 0; index < root.triangleCount; index++) {
-        glm::vec4 t0 = mesh.getVertices()->at(mesh.getIndices()->at(index * 3)).position;
-        glm::vec4 t1 = mesh.getVertices()->at(mesh.getIndices()->at(index * 3 + 1)).position;
-        glm::vec4 t2 = mesh.getVertices()->at(mesh.getIndices()->at(index * 3 + 2)).position;
+        glm::vec4 t0 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(index * 3)).position;
+        glm::vec4 t1 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(index * 3 + 1)).position;
+        glm::vec4 t2 = mesh.getTransform() * mesh.getVertices()->at(mesh.getIndices()->at(index * 3 + 2)).position;
 
         include(root, t0, t1, t2);
     }

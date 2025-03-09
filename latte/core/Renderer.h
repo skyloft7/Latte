@@ -10,7 +10,7 @@ class Renderer {
     bool rayletTriangleIntersects(
             const glm::vec3& orig, const glm::vec3& dir,
             const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2,
-            float& t, glm::vec3& N);
+            float& t, glm::vec3& normal);
     bool rayletBVHNodeIntersects(Raylet raylet, BVHNode node);
     void traceRaylet(glm::vec4& outputColor, std::shared_ptr<Mesh> mesh, BVHNode& bvhNode, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Raylet raylet);
 public:

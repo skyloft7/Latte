@@ -28,9 +28,10 @@ int main() {
 
 
     std::shared_ptr<Mesh> mesh = Core::loadMesh("models/xyzrgb_dragon.obj");
+    mesh->setTransform(glm::mat4(0.01));
     Renderer renderer;
     BVH bvh;
-    auto nodes = bvh.generate(*mesh, 64, 5);
+    auto nodes = bvh.generate(*mesh, 128, 5);
     std::shared_ptr<PixelBuffer> output = renderer.dispatchRays(mesh, nodes, {0, 0, 426, 240}, {0, 0, 426, 240}, camera);
 
 
