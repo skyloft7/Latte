@@ -46,7 +46,9 @@ bool Renderer::rayletBVHNodeIntersects(Raylet raylet, BVHNode node) {
     return hit;
 }
 
-void Renderer::traceRaylet(glm::vec4& outputColor, std::shared_ptr<Mesh> mesh, BVHNode& bvhNode, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Raylet raylet) {
+
+
+void Renderer::traceRaylet(glm::vec4& outputColor, std::shared_ptr<Mesh> mesh, BVHNode& bvhNode, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Raylet raylet, Camera camera) {
     if (!rayletBVHNodeIntersects(raylet, bvhNode)) return;
 
     if (bvhNode.isLeaf) {
@@ -66,41 +68,48 @@ void Renderer::traceRaylet(glm::vec4& outputColor, std::shared_ptr<Mesh> mesh, B
         }
     }
     else {
-        traceRaylet(outputColor, mesh, bvhNodes->at(bvhNode.leftNodeIndex), bvhNodes, raylet);
-        traceRaylet(outputColor, mesh, bvhNodes->at(bvhNode.rightNodeIndex), bvhNodes, raylet);
+        traceRaylet(outputColor, mesh, bvhNodes->at(bvhNode.leftNodeIndex), bvhNodes, raylet, camera);
+        traceRaylet(outputColor, mesh, bvhNodes->at(bvhNode.rightNodeIndex), bvhNodes, raylet, camera);
     }
 
 }
 
-std::shared_ptr<PixelBuffer> Renderer::dispatchRays(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Rect2D renderRegion, Rect2D totalRegion, Camera camera) {
-    auto pixelBuffer = std::make_shared<PixelBuffer>(renderRegion.w, renderRegion.h);
+void Renderer::wait() {
+    mThread.join();
+}
 
 
-    glm::mat4 inverseProj = glm::inverse(camera.proj);
+void Renderer::dispatchRaysAsync(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Rect2D renderRegion, Rect2D totalRegion, Camera camera) {
+    mPixelBuffer = std::make_shared<PixelBuffer>(renderRegion.w, renderRegion.h);
+    this->mRenderRegion = renderRegion;
 
-    for (int y = renderRegion.y; y < renderRegion.y + renderRegion.h; y++) {
+    mThread = std::thread([mesh, bvhNodes, camera, totalRegion, renderRegion, this]() {
+        glm::mat4 inverseProj = glm::inverse(camera.proj);
 
-        int scanlinesRemaining = renderRegion.y + renderRegion.h - y;
-        std::cout << "Scanlines Remaining: " << scanlinesRemaining << std::endl;
+        for (int y = renderRegion.y; y < renderRegion.y + renderRegion.h; y++) {
 
-        for (int x = renderRegion.x; x < renderRegion.x + renderRegion.w; x++) {
+            int scanlinesRemaining = renderRegion.y + renderRegion.h - y;
+            std::cout << "Scanlines Remaining: " << scanlinesRemaining << std::endl;
 
-            glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(2, 2, 1, 1) - glm::vec4(1, 1, 0, 0);
-            glm::vec4 rayEnd = inverseProj * glm::vec4(ndc.x, ndc.y, -100.0f, 1.0f);
-            rayEnd.y = -rayEnd.y;
+            for (int x = renderRegion.x; x < renderRegion.x + renderRegion.w; x++) {
 
-            Raylet raylet(camera.pos, rayEnd);
+                int resX = x - renderRegion.x;
+                int resY = y - renderRegion.y;
 
-            glm::vec4 outputColor(0.0);
-            traceRaylet(outputColor, mesh, bvhNodes->at(0), bvhNodes, raylet);
-            pixelBuffer->setPixel(x, y, outputColor);
+                glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(2, 2, 1, 1) - glm::vec4(1, 1, 0, 0);
+                glm::vec4 rayEnd = inverseProj * glm::vec4(ndc.x, ndc.y, -100.0f, 1.0f);
+                rayEnd.y = -rayEnd.y;
+
+                Raylet raylet(camera.pos, rayEnd);
+
+                glm::vec4 outputColor(0.0);
+                traceRaylet(outputColor, mesh, bvhNodes->at(0), bvhNodes, raylet, camera);
+                this->mPixelBuffer->setPixel(resX, resY, outputColor);
 
 
+            }
         }
-    }
 
+    });
 
-
-
-    return pixelBuffer;
 }

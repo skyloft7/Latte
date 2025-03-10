@@ -1,18 +1,37 @@
 #include "PixelBuffer.h"
 #include "glm.hpp"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <iostream>
+#include <gtc/type_ptr.inl>
+
+#include "Rect2D.h"
 #include "../external/stb/stb_image_write.h"
 
 void PixelBuffer::setPixel(int x, int y, glm::vec4 color) {
-    mVector.insert(mVector.begin() + (y * mWidth) + x, color);
+    mVector[y * mWidth + x] = color;
 }
 
 glm::vec4 PixelBuffer::getPixel(int x, int y) {
     return mVector[y * mWidth + x];
 }
 
+void PixelBuffer::blit(PixelBuffer& tile, Rect2D blitRegion) {
+    for (int y = blitRegion.y; y < blitRegion.y + blitRegion.h; y++) {
+        for (int x = blitRegion.x; x < blitRegion.x + blitRegion.w; x++) {
+            int tileSampleX = x - blitRegion.x;
+            int tileSampleY = y - blitRegion.y;
 
-void PixelBuffer::exportImage(std::string path) {
+            glm::vec4 tilePixel = tile.getPixel(tileSampleX, tileSampleY);
+
+            setPixel(x, y, tilePixel);
+        }
+    }
+
+
+}
+
+
+void PixelBuffer::writeToPNG(std::string path) {
 
     std::vector<uint8_t> image;
 

@@ -1,4 +1,6 @@
 #include <glm.hpp>
+#include <iostream>
+#include <thread>
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
 
@@ -10,12 +12,16 @@
 
 int main() {
 
+
+    int width = 200;
+    int height = 100;
+
     RenderDevice device = RenderDevice::getCPURenderDevice();
 
     Camera camera;
     {
-        camera.width = 426;
-        camera.height = 240;
+        camera.width = width;
+        camera.height = height;
         glm::vec4 whereToLookAt = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
         camera.pos = glm::vec4(0.0f, 0.0f, 3.0f, 1.0f),
         camera.up = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
@@ -29,11 +35,25 @@ int main() {
 
     std::shared_ptr<Mesh> mesh = Core::loadMesh("models/xyzrgb_dragon.obj");
     mesh->setTransform(glm::mat4(0.01));
-    Renderer renderer;
     BVH bvh;
     auto nodes = bvh.generate(*mesh, 128, 5);
-    std::shared_ptr<PixelBuffer> output = renderer.dispatchRays(mesh, nodes, {0, 0, 426, 240}, {0, 0, 426, 240}, camera);
+
+    std::cout << "Finished generating BVH" << std::endl;
 
 
-    output->exportImage("output.png");
+    Renderer renderer0;
+    renderer0.dispatchRaysAsync(mesh, nodes, {0, 0, 200, 50}, {0, 0, (float) width, (float) height}, camera);
+
+    Renderer renderer1;
+    renderer1.dispatchRaysAsync(mesh, nodes, {0, 50, 200, 50}, {0, 0, (float) width, (float) height}, camera);
+
+    renderer0.wait();
+    renderer1.wait();
+
+    PixelBuffer output(width, height);
+    output.blit(*renderer0.getPixelBuffer(), {0, 0, 200, 50});
+    output.blit(*renderer1.getPixelBuffer(), {0, 50, 200, 50});
+
+    output.writeToPNG("full-dragon.png");
+
 }
