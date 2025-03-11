@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Raylet.h"
+#include "../PerfTimer.h"
 #include "accel/bvh/BVH.h"
 
 
@@ -84,9 +85,12 @@ void Renderer::dispatchRaysAsync(std::shared_ptr<Mesh> mesh, std::shared_ptr<std
     this->mRenderRegion = renderRegion;
 
     mThread = std::thread([mesh, bvhNodes, camera, totalRegion, renderRegion, this]() {
-        glm::mat4 inverseProj = glm::inverse(camera.proj);
+        PerfTimer timer("Renderer");
+
+        int rayCount = 0;
 
         for (int y = renderRegion.y; y < renderRegion.y + renderRegion.h; y++) {
+
 
             int scanlinesRemaining = renderRegion.y + renderRegion.h - y;
             std::cout << "Scanlines Remaining: " << scanlinesRemaining << std::endl;
@@ -97,7 +101,7 @@ void Renderer::dispatchRaysAsync(std::shared_ptr<Mesh> mesh, std::shared_ptr<std
                 int resY = y - renderRegion.y;
 
                 glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(2, 2, 1, 1) - glm::vec4(1, 1, 0, 0);
-                glm::vec4 rayEnd = inverseProj * glm::vec4(ndc.x, ndc.y, -100.0f, 1.0f);
+                glm::vec4 rayEnd = glm::vec4(ndc.x, ndc.y, -100.0f, 1.0f);
                 rayEnd.y = -rayEnd.y;
 
                 Raylet raylet(camera.pos, rayEnd);
@@ -106,9 +110,12 @@ void Renderer::dispatchRaysAsync(std::shared_ptr<Mesh> mesh, std::shared_ptr<std
                 traceRaylet(outputColor, mesh, bvhNodes->at(0), bvhNodes, raylet, camera);
                 this->mPixelBuffer->setPixel(resX, resY, outputColor);
 
-
+                rayCount++;
             }
         }
+
+        std::cout << "ray count: " << rayCount << std::endl;
+
 
     });
 

@@ -9,12 +9,15 @@
 #include "Renderer.h"
 #include "../Core.h"
 #include "Camera.h"
+#include "../PerfTimer.h"
+
+#define MULTITHREADED
 
 int main() {
 
 
-    int width = 200;
-    int height = 100;
+    int width = 640;
+    int height = 480;
 
     RenderDevice device = RenderDevice::getCPURenderDevice();
 
@@ -26,7 +29,6 @@ int main() {
         camera.pos = glm::vec4(0.0f, 0.0f, 3.0f, 1.0f),
         camera.up = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
         camera.right = glm::vec4(glm::cross(glm::vec3(whereToLookAt - camera.pos), glm::vec3(camera.up)), 1.0);
-        camera.proj = glm::perspective(glm::radians(45.0f), (float)camera.width/(float)camera.height, 0.1f, 100.0f);
         camera.view = glm::lookAt(glm::vec3(camera.pos),
                  glm::vec3(whereToLookAt),
                  glm::vec3(camera.up));
@@ -36,24 +38,38 @@ int main() {
     std::shared_ptr<Mesh> mesh = Core::loadMesh("models/xyzrgb_dragon.obj");
     mesh->setTransform(glm::mat4(0.01));
     BVH bvh;
-    auto nodes = bvh.generate(*mesh, 128, 5);
+    auto nodes = bvh.generate(*mesh, 256, 5);
 
     std::cout << "Finished generating BVH" << std::endl;
 
 
-    Renderer renderer0;
-    renderer0.dispatchRaysAsync(mesh, nodes, {0, 0, 200, 50}, {0, 0, (float) width, (float) height}, camera);
+    {
+        PerfTimer timer("Main");
+#ifdef MULTITHREADED
 
-    Renderer renderer1;
-    renderer1.dispatchRaysAsync(mesh, nodes, {0, 50, 200, 50}, {0, 0, (float) width, (float) height}, camera);
+        Renderer renderer0;
+        renderer0.dispatchRaysAsync(mesh, nodes, {0, 0, 640, 240}, {0, 0, (float) width, (float) height}, camera);
 
-    renderer0.wait();
-    renderer1.wait();
+        Renderer renderer1;
+        renderer1.dispatchRaysAsync(mesh, nodes, {0, 240, 640, 240}, {0, 0, (float) width, (float) height}, camera);
 
-    PixelBuffer output(width, height);
-    output.blit(*renderer0.getPixelBuffer(), {0, 0, 200, 50});
-    output.blit(*renderer1.getPixelBuffer(), {0, 50, 200, 50});
+        renderer0.wait();
+        renderer1.wait();
 
-    output.writeToPNG("full-dragon.png");
+        PixelBuffer output(width, height);
+        output.blit(*renderer0.getPixelBuffer(), {0, 0, 640, 240});
+        output.blit(*renderer1.getPixelBuffer(), {0, 240, 640, 240});
+
+        output.writeToPNG("dual-core-render.png");
+
+#else
+        Renderer renderer0;
+        renderer0.dispatchRaysAsync(mesh, nodes, {0, 0, (float) width, (float) height}, {0, 0, (float) width, (float) height}, camera);
+        renderer0.wait();
+        renderer0.getPixelBuffer()->writeToPNG("single-core-render.png");
+#endif
+
+    }
+    std::cin.get();
 
 }
