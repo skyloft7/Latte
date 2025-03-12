@@ -35,8 +35,14 @@ int main() {
     }
 
 
-    std::shared_ptr<Mesh> mesh = Core::loadMesh("models/xyzrgb_dragon.obj");
-    mesh->setTransform(glm::mat4(0.01));
+    std::shared_ptr<Mesh> mesh = Core::loadMesh("models/capoo.obj");
+
+
+    auto transform = glm::mat4(1.0f);
+    transform = glm::scale(transform, glm::vec3(0.05f));
+    transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+    mesh->setTransform(transform);
     BVH bvh;
     auto nodes = bvh.generate(*mesh, 256, 5);
 

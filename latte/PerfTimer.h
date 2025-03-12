@@ -7,11 +7,12 @@ class PerfTimer {
     std::string mName;
     std::chrono::time_point<std::chrono::high_resolution_clock> mStart;
 
+
+
 public:
 
     PerfTimer(std::string name) : mName(name) {
         mStart = std::chrono::high_resolution_clock::now();
-
     }
 
     ~PerfTimer() {

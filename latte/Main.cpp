@@ -9,7 +9,7 @@
 int main() {
 
 
-	std::shared_ptr<Mesh> mesh = Core::loadMesh("models/xyzrgb_dragon.obj");
+	std::shared_ptr<Mesh> mesh = Core::loadMesh("models/capoo.obj");
 	std::shared_ptr<Visualizer> visualizer = std::make_shared<BVHVisualizer>();
 
 	AccelerationStructPreview preview;

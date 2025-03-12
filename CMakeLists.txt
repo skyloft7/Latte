@@ -15,7 +15,7 @@ set(PATHTRACER_SOURCES
         latte/core/Main.cpp
         latte/core/Mesh.cpp
         latte/core/PixelBuffer.cpp
-        latte/core/Raylet.cpp
+        latte/core/Ray.cpp
         latte/core/RenderDevice.cpp
         latte/core/Renderer.cpp
         latte/Core.cpp
