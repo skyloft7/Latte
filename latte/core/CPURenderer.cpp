@@ -1,4 +1,4 @@
-#include "Renderer.h"
+#include "CPURenderer.h"
 
 #include <iostream>
 
@@ -7,8 +7,7 @@
 #include "accel/bvh/BVH.h"
 
 
-
-bool Renderer::rayTriangleIntersects(const glm::vec3& orig, const glm::vec3& dir, const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2, float& t, glm::vec3& normal) {
+bool CPURenderer::rayTriangleIntersects(const glm::vec3& orig, const glm::vec3& dir, const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2, float& t, glm::vec3& normal) {
 
     glm::vec3 v0v1 = v1 - v0;
     glm::vec3 v0v2 = v2 - v0;
@@ -35,7 +34,7 @@ bool Renderer::rayTriangleIntersects(const glm::vec3& orig, const glm::vec3& dir
     return true;
 }
 
-float Renderer::rayIntersectsBVHNode(Ray& raylet, BVHNode& node) {
+float CPURenderer::rayIntersectsBVHNode(Ray& raylet, BVHNode& node) {
     glm::vec3 tMin = (node.min - raylet.getOrigin()) * raylet.getInverseDirection();
     glm::vec3 tMax = (node.max - raylet.getOrigin()) * raylet.getInverseDirection();
     glm::vec3 t1 = glm::min(tMin, tMax);
@@ -50,7 +49,7 @@ float Renderer::rayIntersectsBVHNode(Ray& raylet, BVHNode& node) {
 
 
 
-bool Renderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Ray ray, int x, int y) {
+bool CPURenderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Ray ray) {
 
 
     int stack[256];
@@ -107,15 +106,12 @@ bool Renderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<std
 
 
 
-void Renderer::dispatch(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Rect2D renderRegion, Rect2D totalRegion, Camera camera) {
+void CPURenderer::dispatch(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Rect2D renderRegion, Rect2D totalRegion, Camera camera) {
     mPixelBuffer = std::make_shared<PixelBuffer>(renderRegion.w, renderRegion.h);
     this->mRenderRegion = renderRegion;
+
+
     for (int y = renderRegion.y; y < renderRegion.y + renderRegion.h; y++) {
-
-        int scanlinesRemaining = renderRegion.y + renderRegion.h - y;
-
-        std::cout << "Scanlines Remaining: " << scanlinesRemaining << std::endl;
-
         for (int x = renderRegion.x; x < renderRegion.x + renderRegion.w; x++) {
 
 
@@ -131,19 +127,20 @@ void Renderer::dispatch(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<
 
             Ray ray(camera.pos, rayEnd);
 
-            //glm::vec4 outputColor((float) resX / (float) renderRegion.w, (float) resY / (float) renderRegion.h, 0.0f, 1.0f);
+            glm::vec4 outputColor((float) resX / (float) renderRegion.w, (float) resY / (float) renderRegion.h, 0.0f, 1.0f);
 
-            glm::vec4 outputColor(0.0);
+            //glm::vec4 outputColor(0.0);
 
 
 
             //if (std::numeric_limits<float>::infinity() != rayIntersectsBVHNode(ray, bvhNodes->at(0))) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
-            if (rayIntersectsMesh(mesh, bvhNodes, ray, x, y)) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
+            //if (rayIntersectsMesh(mesh, bvhNodes, ray)) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
 
 
             this->mPixelBuffer->setPixel(resX, resY, outputColor);
 
         }
     }
+
 
 }
