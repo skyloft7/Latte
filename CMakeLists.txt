@@ -19,9 +19,10 @@ set(PATHTRACER_SOURCES
         latte/core/RenderDevice.cpp
         latte/core/CPURenderer.cpp
         latte/Core.cpp
-        latte/external/vk-bootstrap/VkBootstrap.cpp
         latte/core/Renderer.h
         latte/core/CPURenderer.h
+        latte/core/GPURenderer.h
+        latte/core/GPURenderer.cpp
 )
 
 set(VISUALIZER_SOURCES
@@ -44,11 +45,11 @@ set(VISUALIZER_SOURCES
 
 
 if (ENABLE_PATHTRACER)
-    find_package(Vulkan REQUIRED)
     add_executable(LattePathTracer
             ${PATHTRACER_SOURCES}
     )
-    target_include_directories(LattePathTracer PUBLIC ${Vulkan_INCLUDE_DIRS} libs/glm-1.0.1-light/glm)
+    target_include_directories(LattePathTracer PUBLIC libs/glm-1.0.1-light/glm)
+    target_link_libraries(LattePathTracer PUBLIC )
 endif()
 
 if (ENABLE_VISUALIZER)

@@ -10,41 +10,11 @@
 #include "../Core.h"
 #include "Camera.h"
 #include "CPURenderer.h"
+#include "GPURenderer.h"
 #include "../PerfTimer.h"
 #include "../external/vk-bootstrap/VkBootstrap.h"
 
 int main() {
-
-
-    /*
-    vkb::InstanceBuilder instance_builder;
-    auto instance_ret = instance_builder.use_default_debug_messenger()
-                            .request_validation_layers()
-                            .set_headless() // Skip vk-bootstrap trying to create WSI for you
-                            .build();
-    if (!instance_ret) {
-        std::cout << instance_ret.error().message() << "\n";
-        return -1;
-    }
-
-    vkb::PhysicalDeviceSelector phys_device_selector(instance_ret.value());
-    auto phys_device_ret = phys_device_selector.select();
-    if (!phys_device_ret) {
-        std::cout << phys_device_ret.error().message() << "\n";
-        return -1;
-    }
-    vkb::PhysicalDevice physical_device = phys_device_ret.value();
-
-    vkb::DeviceBuilder device_builder{ physical_device };
-    auto device_ret = device_builder.build();
-    if (!device_ret) {
-        std::cout << device_ret.error().message() << "\n";
-        return -1;
-    }
-
-    std::cout << device_ret.value().physical_device.name << std::endl;
-    */
-
 
     int width = 640;
     int height = 480;
@@ -82,9 +52,9 @@ int main() {
     {
         PerfTimer timer("Main");
 
-        auto renderer = std::make_shared<CPURenderer>();
+        auto renderer = std::make_shared<GPURenderer>();
         renderer->dispatch(mesh, nodes, {0, 0, (float) width, (float) height}, {0, 0, (float) width, (float) height}, camera);
-        renderer->getPixelBuffer()->writeToPNG("single-core-render.png");
+        //renderer->getPixelBuffer()->writeToPNG("single-core-render.png");
 
     }
     std::cin.get();
