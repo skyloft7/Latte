@@ -105,59 +105,45 @@ bool Renderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<std
     return false;
 }
 
-void Renderer::wait() {
-    mThread.join();
-}
 
 
-void Renderer::dispatchRaysAsync(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Rect2D renderRegion, Rect2D totalRegion, Camera camera) {
+void Renderer::dispatch(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Rect2D renderRegion, Rect2D totalRegion, Camera camera) {
     mPixelBuffer = std::make_shared<PixelBuffer>(renderRegion.w, renderRegion.h);
     this->mRenderRegion = renderRegion;
+    for (int y = renderRegion.y; y < renderRegion.y + renderRegion.h; y++) {
+
+        int scanlinesRemaining = renderRegion.y + renderRegion.h - y;
+
+        std::cout << "Scanlines Remaining: " << scanlinesRemaining << std::endl;
+
+        for (int x = renderRegion.x; x < renderRegion.x + renderRegion.w; x++) {
 
 
 
-    mThread = std::thread([mesh, bvhNodes, camera, totalRegion, renderRegion, this]() {
+            int resX = x - renderRegion.x;
+            int resY = y - renderRegion.y;
 
 
 
-        for (int y = renderRegion.y; y < renderRegion.y + renderRegion.h; y++) {
+            glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(2, 2, 1, 1) - glm::vec4(1, 1, 0, 0);
+            glm::vec4 rayEnd = glm::vec4(ndc.x, ndc.y, -1.0f, 1.0f);
+            rayEnd.y = -rayEnd.y;
 
-            int scanlinesRemaining = renderRegion.y + renderRegion.h - y;
+            Ray ray(camera.pos, rayEnd);
 
-            std::cout << "Scanlines Remaining: " << scanlinesRemaining << std::endl;
+            //glm::vec4 outputColor((float) resX / (float) renderRegion.w, (float) resY / (float) renderRegion.h, 0.0f, 1.0f);
 
-            for (int x = renderRegion.x; x < renderRegion.x + renderRegion.w; x++) {
-
-
-
-                int resX = x - renderRegion.x;
-                int resY = y - renderRegion.y;
+            glm::vec4 outputColor(0.0);
 
 
 
-                glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(2, 2, 1, 1) - glm::vec4(1, 1, 0, 0);
-                glm::vec4 rayEnd = glm::vec4(ndc.x, ndc.y, -1.0f, 1.0f);
-                rayEnd.y = -rayEnd.y;
-
-                Ray ray(camera.pos, rayEnd);
-
-                //glm::vec4 outputColor((float) resX / (float) renderRegion.w, (float) resY / (float) renderRegion.h, 0.0f, 1.0f);
-
-                glm::vec4 outputColor(0.0);
+            //if (std::numeric_limits<float>::infinity() != rayIntersectsBVHNode(ray, bvhNodes->at(0))) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
+            if (rayIntersectsMesh(mesh, bvhNodes, ray, x, y)) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
 
 
+            this->mPixelBuffer->setPixel(resX, resY, outputColor);
 
-                //if (std::numeric_limits<float>::infinity() != rayIntersectsBVHNode(ray, bvhNodes->at(0))) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
-                if (rayIntersectsMesh(mesh, bvhNodes, ray, x, y)) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
-
-
-                this->mPixelBuffer->setPixel(resX, resY, outputColor);
-
-            }
         }
-
-
-
-    });
+    }
 
 }
