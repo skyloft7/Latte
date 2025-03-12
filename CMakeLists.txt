@@ -19,6 +19,7 @@ set(PATHTRACER_SOURCES
         latte/core/RenderDevice.cpp
         latte/core/Renderer.cpp
         latte/Core.cpp
+        latte/external/vk-bootstrap/VkBootstrap.cpp
 )
 
 set(VISUALIZER_SOURCES

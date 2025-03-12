@@ -11,7 +11,6 @@
 #include "Camera.h"
 #include "../PerfTimer.h"
 
-#define MULTITHREADED
 
 int main() {
 
@@ -51,29 +50,11 @@ int main() {
 
     {
         PerfTimer timer("Main");
-#ifdef MULTITHREADED
 
         Renderer renderer0;
-        renderer0.dispatchRaysAsync(mesh, nodes, {0, 0, 640, 240}, {0, 0, (float) width, (float) height}, camera);
-
-        Renderer renderer1;
-        renderer1.dispatchRaysAsync(mesh, nodes, {0, 240, 640, 240}, {0, 0, (float) width, (float) height}, camera);
-
-        renderer0.wait();
-        renderer1.wait();
-
-        PixelBuffer output(width, height);
-        output.blit(*renderer0.getPixelBuffer(), {0, 0, 640, 240});
-        output.blit(*renderer1.getPixelBuffer(), {0, 240, 640, 240});
-
-        output.writeToPNG("dual-core-render.png");
-
-#else
-        Renderer renderer0;
-        renderer0.dispatchRaysAsync(mesh, nodes, {0, 0, (float) width, (float) height}, {0, 0, (float) width, (float) height}, camera);
-        renderer0.wait();
+        renderer0.dispatch(mesh, nodes, {0, 0, (float) width, (float) height}, {0, 0, (float) width, (float) height}, camera);
         renderer0.getPixelBuffer()->writeToPNG("single-core-render.png");
-#endif
+
 
     }
     std::cin.get();
