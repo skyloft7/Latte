@@ -10,9 +10,7 @@
 #include "../Core.h"
 #include "Camera.h"
 #include "CPURenderer.h"
-#include "GPURenderer.h"
 #include "../PerfTimer.h"
-#include "../external/vk-bootstrap/VkBootstrap.h"
 
 int main() {
 
@@ -52,9 +50,9 @@ int main() {
     {
         PerfTimer timer("Main");
 
-        auto renderer = std::make_shared<GPURenderer>();
+        auto renderer = std::make_shared<CPURenderer>();
         renderer->dispatch(mesh, nodes, {0, 0, (float) width, (float) height}, {0, 0, (float) width, (float) height}, camera);
-        //renderer->getPixelBuffer()->writeToPNG("single-core-render.png");
+        renderer->getPixelBuffer()->writeToPNG("single-core-render.png");
 
     }
     std::cin.get();

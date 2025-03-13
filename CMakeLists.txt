@@ -21,8 +21,6 @@ set(PATHTRACER_SOURCES
         latte/Core.cpp
         latte/core/Renderer.h
         latte/core/CPURenderer.h
-        latte/core/GPURenderer.h
-        latte/core/GPURenderer.cpp
 )
 
 set(VISUALIZER_SOURCES
@@ -45,11 +43,11 @@ set(VISUALIZER_SOURCES
 
 
 if (ENABLE_PATHTRACER)
+
     add_executable(LattePathTracer
             ${PATHTRACER_SOURCES}
     )
     target_include_directories(LattePathTracer PUBLIC libs/glm-1.0.1-light/glm)
-    target_link_libraries(LattePathTracer PUBLIC )
 endif()
 
 if (ENABLE_VISUALIZER)
