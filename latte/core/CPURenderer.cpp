@@ -33,7 +33,6 @@ bool CPURenderer::rayTriangleIntersects(const glm::vec3& orig, const glm::vec3& 
 
     return true;
 }
-
 float CPURenderer::rayIntersectsBVHNode(Ray& raylet, BVHNode& node) {
     glm::vec3 tMin = (node.min - raylet.getOrigin()) * raylet.getInverseDirection();
     glm::vec3 tMax = (node.max - raylet.getOrigin()) * raylet.getInverseDirection();
@@ -46,10 +45,15 @@ float CPURenderer::rayIntersectsBVHNode(Ray& raylet, BVHNode& node) {
     float dst = hit ? tNear > 0 ? tNear : 0 : std::numeric_limits<float>::infinity();
     return dst;
 }
+inline glm::vec4 blend(Ray& ray, glm::vec4 colorA, glm::vec4 colorB) {
+    float a = 0.5;
+
+    return (1.0f - a) * colorA + a * colorB;
+}
 
 
 
-bool CPURenderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Ray ray) {
+HitResult CPURenderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Ray ray) {
 
 
     int stack[256];
@@ -75,9 +79,21 @@ bool CPURenderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<
                     glm::vec3 normal;
                     float t;
 
+
                     if (rayTriangleIntersects(ray.getOrigin(), ray.getDirection(), t0, t1, t2, t, normal)) {
-                        return true;
+                        if (t >= 0) {
+                            return {false, t, glm::vec4(normal, 0.0)};
+                        }
                     }
+
+
+
+
+
+
+
+
+
                 }
 
             }
@@ -101,17 +117,80 @@ bool CPURenderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<
 
     }
 
-    return false;
+    return {true, -1, glm::vec4(0.0)};
 }
 
 
+TraceResult CPURenderer::traceRay(Ray& ray, std::shared_ptr<Scene> scene, Camera& camera) {
 
-void CPURenderer::dispatch(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vector<BVHNode>> bvhNodes, Rect2D renderRegion, Rect2D totalRegion, Camera camera) {
+    TraceResult traceResult;
+
+    float closestZ = -1000;
+    std::shared_ptr<Mesh> closestMesh;
+    bool meshHit = false;
+    glm::vec4 closestHit(0.0);
+    glm::vec4 closestNormal(0.0);
+
+    //Find the closest mesh the ray hits
+    for (std::shared_ptr<Mesh> mesh : scene->getMeshes()) {
+        HitResult result = rayIntersectsMesh(mesh, mesh->getBVHNodes(), ray);
+
+        if(!result.miss) {
+            glm::vec4 hit = ray.getOrigin() + ray.getDirection() * result.t;
+            if (hit.z > closestZ) {
+                closestZ = hit.z;
+                closestMesh = mesh;
+                meshHit = true;
+                closestHit = hit;
+                closestNormal = result.normal;
+
+            }
+        }
+    }
+
+    if (meshHit) {
+        //Normal correction since BVH triangle swapping can mess it up
+        glm::vec4 r = (camera.pos - closestHit);
+        if (glm::dot(r, closestNormal) < 0) closestNormal = -closestNormal;
+
+
+        /*
+
+        auto childDir = glm::reflect(ray.getDirection(), closestNormal);
+        Ray childRay(closestHit * 1.01f, childDir);
+
+        auto childTraceResult = traceRay(childRay, scene, camera);
+        depth++;
+
+        if (depth > 10) {
+            __debugbreak();
+        }
+
+        if (!childTraceResult.miss) {
+            traceResult.color = 0.3f * blend(childRay, closestMesh->getMaterial().albedo, childTraceResult.color);
+            return traceResult;
+        }
+        */
+
+        traceResult.miss = false;
+        traceResult.color = glm::vec4(closestNormal);//closestMesh->getMaterial().albedo;
+        return traceResult;
+    }
+
+    traceResult.miss = true;
+    traceResult.color = glm::vec4(0.0);
+
+    return traceResult;
+}
+
+void CPURenderer::dispatch(std::shared_ptr<Scene> scene, Rect2D renderRegion, Rect2D totalRegion, Camera camera) {
     mPixelBuffer = std::make_shared<PixelBuffer>(renderRegion.w, renderRegion.h);
     this->mRenderRegion = renderRegion;
 
 
     for (int y = renderRegion.y; y < renderRegion.y + renderRegion.h; y++) {
+        int scanlinesRemaining = renderRegion.y + renderRegion.h - y;
+        std::cout << "Scanlines Remaining: " << scanlinesRemaining << std::endl;
         for (int x = renderRegion.x; x < renderRegion.x + renderRegion.w; x++) {
 
 
@@ -119,25 +198,16 @@ void CPURenderer::dispatch(std::shared_ptr<Mesh> mesh, std::shared_ptr<std::vect
             int resX = x - renderRegion.x;
             int resY = y - renderRegion.y;
 
-
-
             glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(2, 2, 1, 1) - glm::vec4(1, 1, 0, 0);
             glm::vec4 rayEnd = glm::vec4(ndc.x, ndc.y, -1.0f, 1.0f);
             rayEnd.y = -rayEnd.y;
 
             Ray ray(camera.pos, rayEnd);
 
-            glm::vec4 outputColor((float) resX / (float) renderRegion.w, (float) resY / (float) renderRegion.h, 0.0f, 1.0f);
+            depth = 0;
+            auto traceResult = traceRay(ray, scene, camera);
+            this->mPixelBuffer->setPixel(resX, resY, traceResult.color);
 
-            //glm::vec4 outputColor(0.0);
-
-
-
-            //if (std::numeric_limits<float>::infinity() != rayIntersectsBVHNode(ray, bvhNodes->at(0))) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
-            //if (rayIntersectsMesh(mesh, bvhNodes, ray)) outputColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
-
-
-            this->mPixelBuffer->setPixel(resX, resY, outputColor);
 
         }
     }

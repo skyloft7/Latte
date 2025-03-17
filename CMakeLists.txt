@@ -13,7 +13,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(PATHTRACER_SOURCES
         latte/core/accel/bvh/BVH.cpp
         latte/core/Main.cpp
-        latte/core/Mesh.cpp
         latte/core/PixelBuffer.cpp
         latte/core/Ray.cpp
         latte/core/RenderDevice.cpp
@@ -21,12 +20,17 @@ set(PATHTRACER_SOURCES
         latte/Core.cpp
         latte/core/Renderer.h
         latte/core/CPURenderer.h
+        latte/core/HitResult.h
+        latte/core/Scene.cpp
+        latte/core/Scene.h
+        latte/core/TraceResult.h
+        latte/core/Material.h
+        latte/core/BVHNode.h
 )
 
 set(VISUALIZER_SOURCES
         latte/core/accel/bvh/BVH.cpp
         latte/preview/BVHVisualizer.cpp
-        latte/core/Mesh.cpp
         latte/Core.cpp
         latte/external/glad/glad.c
         latte/external/imgui/imgui_tables.cpp

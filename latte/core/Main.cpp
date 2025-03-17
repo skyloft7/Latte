@@ -10,6 +10,7 @@
 #include "../Core.h"
 #include "Camera.h"
 #include "CPURenderer.h"
+#include "Scene.h"
 #include "../PerfTimer.h"
 
 int main() {
@@ -32,30 +33,59 @@ int main() {
                  glm::vec3(camera.up));
     }
 
+    auto scene = std::make_shared<Scene>();
 
-    std::shared_ptr<Mesh> mesh = Core::loadMesh("models/capoo.obj");
+
+    auto mesh1 = Core::loadMesh("models/capoo.obj");
+    {
+        auto transform = glm::mat4(1.0f);
+        transform = glm::scale(transform, glm::vec3(0.05f));
+        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        mesh1->setTransform(transform);
+
+        BVH bvh;
+        auto nodes = bvh.generate(*mesh1, 64, 5);
+        mesh1->setBVHNodes(nodes);
+        mesh1->setMaterial({glm::vec4(1.0, 0.0, 0.0, 1.0)});
 
 
-    auto transform = glm::mat4(1.0f);
-    transform = glm::scale(transform, glm::vec3(0.05f));
-    transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        scene->addMesh(mesh1);
+    }
 
-    mesh->setTransform(transform);
-    BVH bvh;
-    auto nodes = bvh.generate(*mesh, 256, 5);
+    /*
+    auto mesh2 = Core::loadMesh("models/capoo.obj");
+    {
+        auto transform = glm::mat4(1.0f);
+        transform = glm::scale(transform, glm::vec3(0.05f));
+        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        transform = glm::translate(transform, glm::vec3(20.0f, 0.0f, 0.0f));
+
+        mesh2->setTransform(transform);
+
+        BVH bvh;
+        auto nodes = bvh.generate(*mesh2, 256, 5);
+        mesh2->setBVHNodes(nodes);
+        mesh2->setMaterial({glm::vec4(0.0, 1.0, 0.0, 1.0)});
+
+
+        scene->addMesh(mesh2);
+    }*/
+
 
     std::cout << "Finished generating BVH" << std::endl;
+
 
 
     {
         PerfTimer timer("Main");
 
         auto renderer = std::make_shared<CPURenderer>();
-        renderer->dispatch(mesh, nodes, {0, 0, (float) width, (float) height}, {0, 0, (float) width, (float) height}, camera);
+        renderer->dispatch(scene, {0, 0, (float) width, (float) height}, {0, 0, (float) width, (float) height}, camera);
         renderer->getPixelBuffer()->writeToPNG("single-core-render.png");
 
     }
     std::cin.get();
+
 
 
 }

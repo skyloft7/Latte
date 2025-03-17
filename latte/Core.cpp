@@ -29,6 +29,7 @@ std::string Core::readFile(std::string filePath) {
 
 
 std::shared_ptr<Mesh> Core::loadMesh(std::string filePath) {
+    std::cout << "Loading mesh from " << filePath << std::endl;
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
