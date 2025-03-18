@@ -142,7 +142,7 @@ TraceResult CPURenderer::traceRay(Ray& ray, std::shared_ptr<Scene> scene, Camera
                 closestMesh = mesh;
                 meshHit = true;
                 closestHit = hit;
-                closestNormal = result.normal;
+                closestNormal = glm::normalize(result.normal);
 
             }
         }
@@ -150,17 +150,21 @@ TraceResult CPURenderer::traceRay(Ray& ray, std::shared_ptr<Scene> scene, Camera
 
     if (meshHit) {
         //Normal correction since BVH triangle swapping can mess it up
-        glm::vec4 r = (camera.pos - closestHit);
-        if (glm::dot(r, closestNormal) < 0) closestNormal = -closestNormal;
+        glm::vec4 cameraDir = glm::normalize(camera.pos - closestHit);
+        float s = glm::dot(cameraDir, glm::normalize(closestNormal));
+        if (s < 0.0) closestNormal = -closestNormal;
 
 
-        /*
+
 
         auto childDir = glm::reflect(ray.getDirection(), closestNormal);
-        Ray childRay(closestHit * 1.01f, childDir);
+
+
+        Ray childRay(closestHit * 1.01f, glm::normalize(childDir));
 
         auto childTraceResult = traceRay(childRay, scene, camera);
-        depth++;
+
+
 
         if (depth > 10) {
             __debugbreak();
@@ -168,12 +172,14 @@ TraceResult CPURenderer::traceRay(Ray& ray, std::shared_ptr<Scene> scene, Camera
 
         if (!childTraceResult.miss) {
             traceResult.color = 0.3f * blend(childRay, closestMesh->getMaterial().albedo, childTraceResult.color);
+            depth++;
             return traceResult;
         }
-        */
+
 
         traceResult.miss = false;
-        traceResult.color = glm::vec4(closestNormal);//closestMesh->getMaterial().albedo;
+        traceResult.color = closestMesh->getMaterial().albedo;
+
         return traceResult;
     }
 

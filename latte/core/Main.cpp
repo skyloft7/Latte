@@ -16,7 +16,7 @@
 int main() {
 
     int width = 640;
-    int height = 480;
+    int height = 360;
 
     RenderDevice device = RenderDevice::getCPURenderDevice();
 
@@ -40,11 +40,12 @@ int main() {
     {
         auto transform = glm::mat4(1.0f);
         transform = glm::scale(transform, glm::vec3(0.05f));
-        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        transform = glm::translate(transform, glm::vec3(10.0f, 0.0f, 0.0f));
+        transform = glm::rotate(transform, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         mesh1->setTransform(transform);
 
         BVH bvh;
-        auto nodes = bvh.generate(*mesh1, 64, 5);
+        auto nodes = bvh.generate(*mesh1, 256, 5);
         mesh1->setBVHNodes(nodes);
         mesh1->setMaterial({glm::vec4(1.0, 0.0, 0.0, 1.0)});
 
@@ -52,14 +53,12 @@ int main() {
         scene->addMesh(mesh1);
     }
 
-    /*
     auto mesh2 = Core::loadMesh("models/capoo.obj");
     {
         auto transform = glm::mat4(1.0f);
         transform = glm::scale(transform, glm::vec3(0.05f));
-        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        transform = glm::translate(transform, glm::vec3(20.0f, 0.0f, 0.0f));
-
+        transform = glm::translate(transform, glm::vec3(-14.0f, -15.0f, -10.0f));
+        transform = glm::rotate(transform, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         mesh2->setTransform(transform);
 
         BVH bvh;
@@ -69,7 +68,7 @@ int main() {
 
 
         scene->addMesh(mesh2);
-    }*/
+    }
 
 
     std::cout << "Finished generating BVH" << std::endl;
