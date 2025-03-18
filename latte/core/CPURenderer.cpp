@@ -194,6 +194,11 @@ void CPURenderer::dispatch(std::shared_ptr<Scene> scene, Rect2D renderRegion, Re
     this->mRenderRegion = renderRegion;
 
 
+
+    float viewportHeight = 2 * glm::tan(camera.fov / 2) * -camera.focalLength;
+    float viewportWidth = viewportHeight * ((float) camera.width / (float) camera.height);
+
+
     for (int y = renderRegion.y; y < renderRegion.y + renderRegion.h; y++) {
         int scanlinesRemaining = renderRegion.y + renderRegion.h - y;
         std::cout << "Scanlines Remaining: " << scanlinesRemaining << std::endl;
@@ -204,8 +209,8 @@ void CPURenderer::dispatch(std::shared_ptr<Scene> scene, Rect2D renderRegion, Re
             int resX = x - renderRegion.x;
             int resY = y - renderRegion.y;
 
-            glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(2, 2, 1, 1) - glm::vec4(1, 1, 0, 0);
-            glm::vec4 rayEnd = glm::vec4(ndc.x, ndc.y, -1.0f, 1.0f);
+            glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(viewportWidth, viewportHeight, 1, 1) - glm::vec4(viewportWidth / 2.0f, viewportHeight / 2.0f, 0, 0);
+            glm::vec4 rayEnd = glm::vec4(ndc.x, ndc.y, camera.focalLength, 1.0f);
             rayEnd.y = -rayEnd.y;
 
             Ray ray(camera.pos, rayEnd);

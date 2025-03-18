@@ -16,7 +16,7 @@
 int main() {
 
     int width = 640;
-    int height = 360;
+    int height = 480;
 
     RenderDevice device = RenderDevice::getCPURenderDevice();
 
@@ -31,6 +31,8 @@ int main() {
         camera.view = glm::lookAt(glm::vec3(camera.pos),
                  glm::vec3(whereToLookAt),
                  glm::vec3(camera.up));
+        camera.fov = glm::radians(45.0f);
+        camera.focalLength = -1.0f;
     }
 
     auto scene = std::make_shared<Scene>();
@@ -40,7 +42,7 @@ int main() {
     {
         auto transform = glm::mat4(1.0f);
         transform = glm::scale(transform, glm::vec3(0.05f));
-        transform = glm::translate(transform, glm::vec3(10.0f, 0.0f, 0.0f));
+        transform = glm::translate(transform, glm::vec3(20.0f, -15.0f, -20.0f));
         transform = glm::rotate(transform, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         mesh1->setTransform(transform);
 
@@ -57,7 +59,7 @@ int main() {
     {
         auto transform = glm::mat4(1.0f);
         transform = glm::scale(transform, glm::vec3(0.05f));
-        transform = glm::translate(transform, glm::vec3(-14.0f, -15.0f, -10.0f));
+        transform = glm::translate(transform, glm::vec3(-20.0f, -10.0f, -20.0f));
         transform = glm::rotate(transform, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         mesh2->setTransform(transform);
 
