@@ -45,11 +45,6 @@ float CPURenderer::rayIntersectsBVHNode(Ray& raylet, BVHNode& node) {
     float dst = hit ? tNear > 0 ? tNear : 0 : std::numeric_limits<float>::infinity();
     return dst;
 }
-inline glm::vec4 blend(Ray& ray, glm::vec4 colorA, glm::vec4 colorB) {
-    float a = 0.5;
-
-    return (1.0f - a) * colorA + a * colorB;
-}
 
 
 
@@ -171,14 +166,23 @@ TraceResult CPURenderer::traceRay(Ray& ray, std::shared_ptr<Scene> scene, Camera
         }
 
         if (!childTraceResult.miss) {
-            traceResult.color = 0.3f * blend(childRay, closestMesh->getMaterial().albedo, childTraceResult.color);
+            //traceResult.color = 0.3f * blend(childRay, closestMesh->getMaterial().albedo, childTraceResult.color);
+
+            auto material = closestMesh->getMaterial();
+            auto childMaterial = childTraceResult.color;
+
+            glm::vec4 color = (material.emission + material.reflectivity) * material.albedo;
+            glm::vec4 childColor = childTraceResult.color;
+
+            traceResult.color = (color + childColor) * glm::clamp(glm::dot(glm::normalize(childRay.getDirection()), closestNormal), 0.0f, 1.0f);
+
             depth++;
             return traceResult;
         }
 
 
         traceResult.miss = false;
-        traceResult.color = closestMesh->getMaterial().albedo;
+        traceResult.color = (closestMesh->getMaterial().emission) * closestMesh->getMaterial().albedo;
 
         return traceResult;
     }

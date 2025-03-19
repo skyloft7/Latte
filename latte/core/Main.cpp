@@ -15,8 +15,8 @@
 
 int main() {
 
-    int width = 640;
-    int height = 480;
+    int width = 100;
+    int height = 50;
 
     RenderDevice device = RenderDevice::getCPURenderDevice();
 
@@ -49,7 +49,7 @@ int main() {
         BVH bvh;
         auto nodes = bvh.generate(*mesh1, 256, 5);
         mesh1->setBVHNodes(nodes);
-        mesh1->setMaterial({glm::vec4(1.0, 0.0, 0.0, 1.0)});
+        mesh1->setMaterial({glm::vec4(1.0, 0.0, 0.0, 1.0), 0.0, 0.5});
 
 
         scene->addMesh(mesh1);
@@ -66,7 +66,7 @@ int main() {
         BVH bvh;
         auto nodes = bvh.generate(*mesh2, 256, 5);
         mesh2->setBVHNodes(nodes);
-        mesh2->setMaterial({glm::vec4(0.0, 1.0, 0.0, 1.0)});
+        mesh2->setMaterial({glm::vec4(0.0, 1.0, 0.0, 1.0), 0.0, 0.9});
 
 
         scene->addMesh(mesh2);
@@ -82,7 +82,7 @@ int main() {
 
         auto renderer = std::make_shared<CPURenderer>();
         renderer->dispatch(scene, {0, 0, (float) width, (float) height}, {0, 0, (float) width, (float) height}, camera);
-        renderer->getPixelBuffer()->writeToPNG("single-core-render.png");
+        renderer->getPixelBuffer()->writeToPNG("single-core-render-lights.png");
 
     }
     std::cin.get();
