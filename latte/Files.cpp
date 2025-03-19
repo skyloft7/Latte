@@ -1,4 +1,4 @@
-#include "Core.h"
+#include "Files.h"
 
 #include <filesystem>
 #include <string>
@@ -7,7 +7,9 @@
 #include "external/tiny_obj_loader/tiny_obj_loader.h"
 #include <iostream>
 
-std::string Core::readFile(std::string filePath) {
+#include "core/Mesh.h"
+
+std::string Files::readFile(std::string filePath) {
 
     if (!std::filesystem::exists(filePath)) {
         throw std::invalid_argument(filePath + " does not exist");
@@ -28,7 +30,7 @@ std::string Core::readFile(std::string filePath) {
 }
 
 
-std::shared_ptr<Mesh> Core::loadMesh(std::string filePath) {
+std::shared_ptr<Mesh> Files::readMesh(std::string filePath) {
     std::cout << "Loading mesh from " << filePath << std::endl;
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -112,7 +114,7 @@ std::shared_ptr<Mesh> Core::loadMesh(std::string filePath) {
     return std::make_shared<Mesh>(filePath, vertices, indices);
 }
 
-std::shared_ptr<std::vector<char>> Core::readBinaryFile(std::string filePath) {
+std::shared_ptr<std::vector<char>> Files::readBinaryFile(std::string filePath) {
 
     if (!std::filesystem::exists(filePath)) {
         throw std::invalid_argument(filePath + " does not exist");

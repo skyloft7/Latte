@@ -17,7 +17,7 @@ set(PATHTRACER_SOURCES
         latte/core/Ray.cpp
         latte/core/RenderDevice.cpp
         latte/core/CPURenderer.cpp
-        latte/Core.cpp
+        latte/Files.cpp
         latte/core/Renderer.h
         latte/core/CPURenderer.h
         latte/core/HitResult.h
@@ -31,7 +31,7 @@ set(PATHTRACER_SOURCES
 set(VISUALIZER_SOURCES
         latte/core/accel/bvh/BVH.cpp
         latte/preview/BVHVisualizer.cpp
-        latte/Core.cpp
+        latte/Files.cpp
         latte/external/glad/glad.c
         latte/external/imgui/imgui_tables.cpp
         latte/external/imgui/imgui_widgets.cpp

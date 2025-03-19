@@ -20,41 +20,14 @@ public:
 
     };
 
-    Material getMaterial() {
-        return mMaterial;
-    }
-
-    void setMaterial(Material material) {
-        mMaterial = material;
-    }
-
-
-    void setBVHNodes(std::shared_ptr<std::vector<BVHNode>> bvhNodes) {
-        this->mBVHNodes = bvhNodes;
-    }
-
-    std::shared_ptr<std::vector<BVHNode>> getBVHNodes() {
-        return mBVHNodes;
-    }
-
-    std::shared_ptr<std::vector<Vertex>> getVertices() const {
-        return mVertices;
-    }
-
-    std::shared_ptr<std::vector<int>> getIndices() const {
-        return mIndices;
-    }
-
-    std::string getName() const {
-        return mName;
-    }
-
-    void setTransform(const glm::mat4& transform) {
-        mTransform = transform;
-    }
-
-    glm::mat4 getTransform() const {
-        return mTransform;
-    }
+    Material getMaterial();
+    void setMaterial(Material material);
+    void setBVHNodes(std::shared_ptr<std::vector<BVHNode>> bvhNodes);
+    std::shared_ptr<std::vector<BVHNode>> getBVHNodes();
+    std::shared_ptr<std::vector<Vertex>> getVertices();
+    std::shared_ptr<std::vector<int>> getIndices();
+    std::string getName();
+    void setTransform(const glm::mat4& transform);
+    glm::mat4 getTransform();
 };
 

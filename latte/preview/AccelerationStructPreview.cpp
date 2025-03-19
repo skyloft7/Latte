@@ -146,8 +146,8 @@ void AccelerationStructPreview::run(std::string title, int width, int height, st
 
         modelShaderProgram = glCreateProgram();
 
-        modelVertexShader = createShader("ModelPreview_Vert", Core::readFile("shaders/preview/ModelPreview.vert"), GL_VERTEX_SHADER);
-        modelFragmentShader = createShader("ModelPreview_Frag", Core::readFile("shaders/preview/ModelPreview.frag"), GL_FRAGMENT_SHADER);
+        modelVertexShader = createShader("ModelPreview_Vert", Files::readFile("shaders/preview/ModelPreview.vert"), GL_VERTEX_SHADER);
+        modelFragmentShader = createShader("ModelPreview_Frag", Files::readFile("shaders/preview/ModelPreview.frag"), GL_FRAGMENT_SHADER);
 
         glAttachShader(modelShaderProgram, modelVertexShader);
         glAttachShader(modelShaderProgram, modelFragmentShader);
@@ -188,8 +188,8 @@ void AccelerationStructPreview::run(std::string title, int width, int height, st
 
         visualizationShaderProgram = glCreateProgram();
 
-        visualizationVertexShader = createShader("Visualization_Vert", Core::readFile("shaders/preview/Visualization.vert"), GL_VERTEX_SHADER);
-        visualizationFragmentShader = createShader("Visualization_Frag", Core::readFile("shaders/preview/Visualization.frag"), GL_FRAGMENT_SHADER);
+        visualizationVertexShader = createShader("Visualization_Vert", Files::readFile("shaders/preview/Visualization.vert"), GL_VERTEX_SHADER);
+        visualizationFragmentShader = createShader("Visualization_Frag", Files::readFile("shaders/preview/Visualization.frag"), GL_FRAGMENT_SHADER);
 
         glAttachShader(visualizationShaderProgram, visualizationVertexShader);
         glAttachShader(visualizationShaderProgram, visualizationFragmentShader);

@@ -7,6 +7,10 @@
 #include "Rect2D.h"
 #include "../external/stb/stb_image_write.h"
 
+PixelBuffer::PixelBuffer(int width, int height) : mWidth(width), mHeight(height) {
+    mVector.resize(mWidth * mHeight);
+}
+
 void PixelBuffer::setPixel(int x, int y, glm::vec4 color) {
     mVector[y * mWidth + x] = color;
 }

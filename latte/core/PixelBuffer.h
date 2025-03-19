@@ -11,9 +11,7 @@ class PixelBuffer {
 
 
 public:
-    PixelBuffer(int width, int height) : mWidth(width), mHeight(height) {
-        mVector.resize(mWidth * mHeight);
-    }
+    PixelBuffer(int width, int height);
     void setPixel(int x, int y, glm::vec4 color);
     glm::vec4 getPixel(int x, int y);
     void writeToPNG(std::string path);

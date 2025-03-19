@@ -3,6 +3,7 @@
 
 struct Material {
     glm::vec4 albedo;
-    float emission;
-    float reflectivity;
+    float metallic;
+    float roughness;
+
 };

@@ -38,7 +38,7 @@ int main() {
     auto scene = std::make_shared<Scene>();
 
 
-    auto mesh1 = Core::loadMesh("models/capoo.obj");
+    auto mesh1 = Files::loadMesh("models/capoo.obj");
     {
         auto transform = glm::mat4(1.0f);
         transform = glm::scale(transform, glm::vec3(0.05f));
@@ -55,7 +55,7 @@ int main() {
         scene->addMesh(mesh1);
     }
 
-    auto mesh2 = Core::loadMesh("models/capoo.obj");
+    auto mesh2 = Files::loadMesh("models/capoo.obj");
     {
         auto transform = glm::mat4(1.0f);
         transform = glm::scale(transform, glm::vec3(0.05f));

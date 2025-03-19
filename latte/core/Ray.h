@@ -8,10 +8,8 @@ class Ray {
     glm::vec4 mInverseDir;
 
 public:
-    Ray(glm::vec4 origin, glm::vec4 direction) : mOrigin(origin), mDirection(direction) {
-        mInverseDir = glm::vec4(1.0) / mDirection;
-    }
-    glm::vec4 getOrigin() {return mOrigin;}
-    glm::vec4 getDirection() {return mDirection;}
-    glm::vec4 getInverseDirection() {return mInverseDir;}
+    Ray(glm::vec4 origin, glm::vec4 direction);
+    glm::vec4 getOrigin();
+    glm::vec4 getDirection();
+    glm::vec4 getInverseDirection();
 };
