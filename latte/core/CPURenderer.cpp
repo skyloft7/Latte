@@ -5,6 +5,7 @@
 #include "Ray.h"
 #include "../PerfTimer.h"
 #include "CookTorrance.h"
+#include "Debug.h"
 
 bool CPURenderer::rayTriangleIntersects(const glm::vec3& orig, const glm::vec3& dir, const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2, float& t, glm::vec3& normal) {
 
@@ -162,7 +163,7 @@ TraceResult CPURenderer::traceRay(Ray& ray, std::shared_ptr<Scene> scene, Camera
 
 
         if (depth > 10) {
-            __debugbreak();
+            latteNewBreakpoint();
         }
 
         if (!childTraceResult.miss) {

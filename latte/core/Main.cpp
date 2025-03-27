@@ -12,6 +12,7 @@
 #include "CPURenderer.h"
 #include "Scene.h"
 #include "../PerfTimer.h"
+#include "Debug.h"
 
 #define screenWidth 100
 #define screenHeight 50
@@ -19,7 +20,6 @@
 #define numThreads 2
 
 int main() {
-
 
     RenderDevice device = RenderDevice::getCPURenderDevice();
 
