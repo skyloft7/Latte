@@ -17,7 +17,7 @@ public:
 
     ~PerfTimer() {
         std::chrono::duration<double, std::milli> duration = std::chrono::high_resolution_clock::now() - mStart;
-        std::cout << "PerfTimer [" << mName << "] " << duration.count() << "ms" << std::endl;
+        std::cout << "[" << mName << "] " << duration.count() << "ms" << std::endl;
 
 
     }

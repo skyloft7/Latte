@@ -4,15 +4,13 @@
 
 #include "Ray.h"
 #include "../PerfTimer.h"
-#include "accel/bvh/BVH.h"
-
+#include "CookTorrance.h"
 
 bool CPURenderer::rayTriangleIntersects(const glm::vec3& orig, const glm::vec3& dir, const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2, float& t, glm::vec3& normal) {
 
     glm::vec3 v0v1 = v1 - v0;
     glm::vec3 v0v2 = v2 - v0;
     glm::vec3 pvec = glm::cross(dir, v0v2);
-
     float det = glm::dot(v0v1, pvec);
     if (det < 1e-8) return false;
 
@@ -77,6 +75,8 @@ HitResult CPURenderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared
 
                     if (rayTriangleIntersects(ray.getOrigin(), ray.getDirection(), t0, t1, t2, t, normal)) {
                         if (t >= 0) {
+
+
                             return {false, t, glm::vec4(normal, 0.0)};
                         }
                     }
@@ -112,7 +112,7 @@ HitResult CPURenderer::rayIntersectsMesh(std::shared_ptr<Mesh> mesh, std::shared
 
     }
 
-    return {true, -1, glm::vec4(0.0)};
+    return {true, -1, glm::vec4(1.0, 0.0, 0.0, 1.0)};
 }
 
 
@@ -166,23 +166,16 @@ TraceResult CPURenderer::traceRay(Ray& ray, std::shared_ptr<Scene> scene, Camera
         }
 
         if (!childTraceResult.miss) {
-            //traceResult.color = 0.3f * blend(childRay, closestMesh->getMaterial().albedo, childTraceResult.color);
-
-            auto material = closestMesh->getMaterial();
-            auto childMaterial = childTraceResult.color;
-
-            glm::vec4 color = (material.emission + material.reflectivity) * material.albedo;
-            glm::vec4 childColor = childTraceResult.color;
-
-            traceResult.color = (color + childColor) * glm::clamp(glm::dot(glm::normalize(childRay.getDirection()), closestNormal), 0.0f, 1.0f);
-
+            traceResult.color = CookTorrance::color(closestMesh, closestHit, closestNormal, scene, camera) + CookTorrance::color(childTraceResult.mesh, childTraceResult.hit, childTraceResult.normal, scene, camera);
             depth++;
             return traceResult;
         }
 
 
         traceResult.miss = false;
-        traceResult.color = (closestMesh->getMaterial().emission) * closestMesh->getMaterial().albedo;
+        traceResult.mesh = closestMesh;
+        traceResult.color = CookTorrance::color(closestMesh, closestHit, closestNormal, scene, camera);
+        traceResult.normal = closestNormal;
 
         return traceResult;
     }
@@ -199,7 +192,7 @@ void CPURenderer::dispatch(std::shared_ptr<Scene> scene, Rect2D renderRegion, Re
 
 
 
-    float viewportHeight = 2 * glm::tan(camera.fov / 2) * -camera.focalLength;
+    float viewportHeight = 2 * glm::tan(camera.fov / 2) * camera.focalLength;
     float viewportWidth = viewportHeight * ((float) camera.width / (float) camera.height);
 
 
@@ -215,13 +208,20 @@ void CPURenderer::dispatch(std::shared_ptr<Scene> scene, Rect2D renderRegion, Re
 
             glm::vec4 ndc = glm::vec4(x, y, 1, 1) / glm::vec4(totalRegion.w, totalRegion.h, 1, 1) * glm::vec4(viewportWidth, viewportHeight, 1, 1) - glm::vec4(viewportWidth / 2.0f, viewportHeight / 2.0f, 0, 0);
             glm::vec4 rayEnd = glm::vec4(ndc.x, ndc.y, camera.focalLength, 1.0f);
-            rayEnd.y = -rayEnd.y;
+            rayEnd.y *= -1.0f;
 
             Ray ray(camera.pos, rayEnd);
 
             depth = 0;
             auto traceResult = traceRay(ray, scene, camera);
-            this->mPixelBuffer->setPixel(resX, resY, traceResult.color);
+
+
+            glm::vec3 color = traceResult.color;
+            color = color / (color + glm::vec3(1.0));
+            color = pow(color, glm::vec3(1.0/2.2));
+
+
+            this->mPixelBuffer->setPixel(resX, resY, glm::vec4(color, 1.0));
 
 
         }

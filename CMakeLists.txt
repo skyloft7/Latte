@@ -25,7 +25,11 @@ set(PATHTRACER_SOURCES
         latte/core/Scene.h
         latte/core/TraceResult.h
         latte/core/Material.h
-        latte/core/BVHNode.h
+        latte/core/accel/bvh/BVHNode.h
+        latte/core/Light.h
+        latte/core/Light.cpp
+        latte/core/CookTorrance.h
+        latte/core/Mesh.cpp
 )
 
 set(VISUALIZER_SOURCES

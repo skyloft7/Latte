@@ -5,7 +5,7 @@
 #include "glm.hpp"
 #include "Material.h"
 #include "Vertex.h"
-#include "BVHNode.h"
+#include "accel/bvh/BVHNode.h"
 
 class Mesh {
     std::shared_ptr<std::vector<Vertex>> mVertices;

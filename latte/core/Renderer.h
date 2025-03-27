@@ -15,4 +15,5 @@ protected:
 public:
     virtual void dispatch(std::shared_ptr<Scene> scene, Rect2D renderRegion, Rect2D totalRegion, Camera camera) = 0;
     std::shared_ptr<PixelBuffer> getPixelBuffer() { return mPixelBuffer; }
+    Rect2D getRenderRegion() { return mRenderRegion; }
 };

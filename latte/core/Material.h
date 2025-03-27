@@ -2,8 +2,9 @@
 #include <vec4.hpp>
 
 struct Material {
-    glm::vec4 albedo;
+    glm::vec3 albedo;
     float metallic;
     float roughness;
+    float ao;
 
 };

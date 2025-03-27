@@ -1,4 +1,4 @@
-#include <vec4.hpp>
+#include <glm.hpp>
 
 struct BVHNode {
     glm::vec4 min = glm::vec4(1e30f);
