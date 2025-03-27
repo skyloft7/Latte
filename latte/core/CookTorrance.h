@@ -8,11 +8,11 @@ using namespace glm;
 class CookTorrance {
 public:
 
-    static vec3 FresnelSchlick(float cosTheta, vec3 F0) {
+    static vec3 fresnelSchlick(float cosTheta, vec3 F0) {
         return F0 + (vec3(1.0) - F0) * (float) pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
     }
 
-    static float DistributionGGX(vec3 N, vec3 H, float roughness) {
+    static float distributionGGX(vec3 N, vec3 H, float roughness) {
         float a      = roughness*roughness;
         float a2     = a*a;
         float NdotH  = max(dot(N, H), 0.0f);
@@ -34,7 +34,7 @@ public:
 
         return num / denom;
     }
-    static float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
+    static float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
         float NdotV = max(dot(N, V), 0.0f);
         float NdotL = max(dot(N, L), 0.0f);
         float ggx2  = GeometrySchlickGGX(NdotV, roughness);
@@ -66,9 +66,9 @@ public:
             float attenuation = 1.0 / (distance * distance);
             vec3 radiance = lightColor * attenuation;
 
-            float NDF = DistributionGGX(N, H, material.roughness);
-            float G   = GeometrySmith(N, V, L, material.roughness);
-            vec3 F    = FresnelSchlick(max(dot(H, V), 0.0f), F0);
+            float NDF = distributionGGX(N, H, material.roughness);
+            float G   = geometrySmith(N, V, L, material.roughness);
+            vec3 F    = fresnelSchlick(max(dot(H, V), 0.0f), F0);
 
 
 
